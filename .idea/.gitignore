@@ -1,0 +1,16 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../:\JavaWorkSpace\My-Spring\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+/compiler.xml
+/jarRepositories.xml
+/misc.xml
+/vcs.xml
+/inspectionProfiles
+../target
+../My-Spring.iml
+
