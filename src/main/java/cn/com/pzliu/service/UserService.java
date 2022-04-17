@@ -1,5 +1,6 @@
 package cn.com.pzliu.service;
 
+import cn.com.pzliu.spring.annotation.Autowired;
 import cn.com.pzliu.spring.annotation.Component;
 import cn.com.pzliu.spring.annotation.Scope;
 
@@ -10,4 +11,13 @@ import cn.com.pzliu.spring.annotation.Scope;
 @Component
 @Scope("")
 public class UserService {
+
+    @Autowired
+    private OrderService orderService;
+
+
+    public void testAutowired(){
+        System.out.println(orderService);
+    }
+
 }

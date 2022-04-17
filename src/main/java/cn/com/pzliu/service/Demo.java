@@ -12,6 +12,7 @@ public class Demo {
         ApplicationContext applicationContext = new ApplicationContext(Config.class);
         UserService userService = (UserService) applicationContext.getBean("userService");
         System.out.println(userService);
+        userService.testAutowired();
     }
 
 }

@@ -1,5 +1,6 @@
 package cn.com.pzliu.spring;
 
+import cn.com.pzliu.spring.annotation.Autowired;
 import cn.com.pzliu.spring.annotation.Component;
 import cn.com.pzliu.spring.annotation.ComponentScan;
 import cn.com.pzliu.spring.annotation.Scope;
@@ -7,6 +8,7 @@ import cn.com.pzliu.spring.exception.CreateBeanException;
 
 import java.beans.Introspector;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
@@ -100,10 +102,20 @@ public class ApplicationContext {
         return packagePath.replace("\\", ".");
     }
 
-    private Object createBean(String name, BeanDefinition beanDefinition) {
+    private Object createBean(String beanName, BeanDefinition beanDefinition) {
         Class beanType = beanDefinition.getType();
         try {
+            // 实例化
             Object instance = beanType.getConstructor().newInstance();
+
+            // 依赖注入
+            for (Field field : beanType.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Autowired.class)){
+                    field.setAccessible(true);
+                    field.set(instance,getBean(field.getName()));
+                }
+            }
+
             return instance;
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
