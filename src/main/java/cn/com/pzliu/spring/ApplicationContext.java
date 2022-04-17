@@ -116,10 +116,17 @@ public class ApplicationContext {
                 }
             }
 
-            //Aware 回调模式
+            //Aware 回调模式 会给参数
             if (instance instanceof BeanNameAware){
                 ((BeanNameAware) instance).setBeanName(beanName);
             }
+
+            //初始化,直接调用
+            if (instance instanceof InitializingBean){
+                ((InitializingBean) instance).afterPropertiesSet();
+            }
+
+            // 初始化后 AOP BeanPostProcessor
 
             return instance;
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
