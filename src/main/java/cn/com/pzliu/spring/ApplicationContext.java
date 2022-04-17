@@ -116,6 +116,11 @@ public class ApplicationContext {
                 }
             }
 
+            //Aware 回调模式
+            if (instance instanceof BeanNameAware){
+                ((BeanNameAware) instance).setBeanName(beanName);
+            }
+
             return instance;
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
