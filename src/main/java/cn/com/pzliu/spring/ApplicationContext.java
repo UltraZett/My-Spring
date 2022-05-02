@@ -11,6 +11,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -29,6 +30,8 @@ public class ApplicationContext {
     private ConcurrentHashMap<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
     private ConcurrentHashMap<String, Object> singletonBeanMap = new ConcurrentHashMap<>();
+
+    private ArrayList<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     public ApplicationContext(Class configClass) {
         this.configClass = configClass;
@@ -59,6 +62,18 @@ public class ApplicationContext {
                             e.printStackTrace();
                         }
                         if (clazz.isAnnotationPresent(Component.class)){
+
+                            if (BeanPostProcessor.class.isAssignableFrom(clazz)){
+                                // 类是否实现了这个接口
+                                BeanPostProcessor instance = null;
+                                try {
+                                    instance = (BeanPostProcessor) clazz.newInstance();
+                                    beanPostProcessors.add(instance);
+                                } catch (IllegalAccessException | InstantiationException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
                             // Bean
                             Component componentAnnotation = clazz.getAnnotation(Component.class);
                             String beanName = componentAnnotation.value();
@@ -93,6 +108,7 @@ public class ApplicationContext {
             }
         });
 
+
     }
 
     private String getBeanClassName(String fileAbsolutePath, String scanPackagePath) {
@@ -116,18 +132,28 @@ public class ApplicationContext {
                 }
             }
 
+
             //Aware 回调模式 会给参数
             if (instance instanceof BeanNameAware){
                 ((BeanNameAware) instance).setBeanName(beanName);
             }
+
+
 
             //初始化,直接调用
             if (instance instanceof InitializingBean){
                 ((InitializingBean) instance).afterPropertiesSet();
             }
 
-            // 初始化后 AOP BeanPostProcessor
+            // BeanPostProcessor
+            for (BeanPostProcessor beanPostProcessor : beanPostProcessors) {
+                instance = beanPostProcessor.postProcessAfterInitialization(beanName,instance);
+            }
 
+            //初始化后 AOP应该返回代理对象
+
+
+            //普通对象
             return instance;
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();

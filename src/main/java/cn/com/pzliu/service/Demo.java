@@ -10,9 +10,9 @@ public class Demo {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ApplicationContext(Config.class);
-        UserService userService = (UserService) applicationContext.getBean("userService");
+        UserInterface userService = (UserInterface) applicationContext.getBean("userService");
         System.out.println(userService);
-        userService.testAutowired();
+//        userService.testAutowired();
     }
 
 }

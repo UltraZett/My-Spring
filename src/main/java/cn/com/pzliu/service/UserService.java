@@ -12,7 +12,7 @@ import cn.com.pzliu.spring.annotation.Scope;
  */
 @Component
 @Scope("")
-public class UserService implements BeanNameAware, InitializingBean {
+public class UserService implements BeanNameAware, InitializingBean,UserInterface {
 
     @Autowired
     private OrderService orderService;
@@ -24,6 +24,8 @@ public class UserService implements BeanNameAware, InitializingBean {
     public void testAutowired(){
         System.out.println(orderService);
     }
+
+
 
 
 
@@ -39,5 +41,10 @@ public class UserService implements BeanNameAware, InitializingBean {
     @Override
     public void afterPropertiesSet() {
         System.out.println("doSomething");
+    }
+
+    @Override
+    public void aopTest() {
+
     }
 }
